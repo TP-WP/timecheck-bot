@@ -13,6 +13,7 @@ CREATE TABLE member_list
     guild_name VARCHAR(40) NOT NULL,
     user_id BIGINT NOT NULL,
     user_name VARCHAR(40) NOT NULL,
+    guild_nick VARCHAR(40),
     connection_time DECIMAL(20,6),
     PRIMARY KEY (guild_id, user_id)
 );
@@ -23,6 +24,7 @@ CREATE TABLE logins
     guild_name VARCHAR(40) NOT NULL,
     user_id BIGINT NOT NULL,
     user_name VARCHAR(40) NOT NULL,
+    guild_nick VARCHAR(40),
     login TIMESTAMP,
     PRIMARY KEY (guild_id, user_id)
 );
@@ -33,14 +35,15 @@ CREATE PROCEDURE insert_time (
     IN guildName VARCHAR(40),
     IN userId BIGINT,
     IN userName VARCHAR(40),
+    IN guildNick VARCHAR(40),
     IN logout TIMESTAMP
     )
 BEGIN
-IF EXISTS (SELECT user_id FROM logins WHERE user_id=userId and guild_id=guildId) THEN
+IF EXISTS (SELECT user_id FROM logins WHERE user_id=userId AND guild_id=guildId) THEN
     INSERT INTO member_list
-    (guild_id, guild_name, user_id, user_name, connection_time)
+    (guild_id, guild_name, user_id, user_name, guild_nick, connection_time)
 	VALUES
-    (guildId, guildName, userId, userName, TIMEDIFF(logout,(SELECT login FROM logins WHERE user_id=userId AND guild_id=guildId))/3600)
+    (guildId, guildName, userId, userName, guildNick, TIMEDIFF(logout,(SELECT login FROM logins WHERE user_id=userId AND guild_id=guildId))/3600)
 	ON DUPLICATE KEY UPDATE
     connection_time = connection_time + TIMEDIFF(logout,(SELECT login FROM logins WHERE user_id=userId AND guild_id=guildId))/3600;
 END IF;
@@ -53,13 +56,14 @@ CREATE PROCEDURE insert_login (
     IN guildName VARCHAR(40),
     IN userId BIGINT,
     IN userName VARCHAR(40),
+    IN guildNick VARCHAR(40),
     IN login TIMESTAMP
     )
 BEGIN    
     INSERT INTO logins
-    (guild_id, guild_name, user_id, user_name, login)
+    (guild_id, guild_name, user_id, user_name, guild_nick, login)
 VALUES
-    (guildId, guildName, userId, userName, login)
+    (guildId, guildName, userId, userName, guildNick, login)
 ON DUPLICATE KEY UPDATE
     login = login;
 END&&  

@@ -10,7 +10,7 @@ def handle_response(message, is_private) -> str:
     if p_message == "get connection time":
         return mysql_con.get_time_en(message.guild.id)
     
-    if p_message == "querido bot, podrias decirme los tiempos de conexion porfavor?":
+    if p_message == "tiempos de conexion":
         return mysql_con.get_time_es(message.guild.id)
     
     if p_message == "!help":

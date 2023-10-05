@@ -45,10 +45,10 @@ def run_discord_bot():
     async def on_voice_state_update(member, before, after):
         if not member.bot:
             if before.channel == None:
-                mysql_con.login(member.id, str(member), member.guild.id, str(member.guild))
+                mysql_con.login(member.guild.id, member.guild.name, member.id, member.global_name, member.nick )
                 
             if after.channel == None:
-                mysql_con.logout(member.id, str(member), member.guild.id, str(member.guild))
+                mysql_con.logout(member.guild.id, member.guild.name, member.id, member.global_name, member.nick)
 
     
     client.run(os.getenv('TOKEN'))

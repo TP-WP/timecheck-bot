@@ -43,30 +43,30 @@ def query(sql, pool, fetch=False):
 
 pool = create_connection_pool()
 
-def login(user_id, user_name, guild_id, guild_name):
+def login( guild_id, guild_name, user_id, user_name, guild_nick):
     now = datetime.now()
     now = now.strftime('%Y-%m-%d %H:%M:%S')
-    sql = f"CALL insert_login ('{guild_id}', '{guild_name}', '{user_id}', '{user_name}', '{now}')"
+    sql = f"CALL insert_login ('{guild_id}', '{guild_name}', '{user_id}', '{user_name}', '{guild_nick}', '{now}')"
     query(sql, pool)
 
-def logout(user_id, user_name, guild_id, guild_name):
+def logout( guild_id, guild_name, user_id, user_name, guild_nick):
     now = datetime.now()
     now = now.strftime('%Y-%m-%d %H:%M:%S')
-    sql = f"CALL insert_time ('{guild_id}', '{guild_name}', '{user_id}', '{user_name}', '{now}')"
+    sql = f"CALL insert_time ('{guild_id}', '{guild_name}', '{user_id}', '{user_name}', '{guild_nick}', '{now}')"
     query(sql, pool)
 
 def get_time_en(server_id):
-    sql = f"SELECT user_name, connection_time FROM member_list WHERE guild_id={server_id}"
+    sql = f"SELECT user_name, guild_nick, connection_time FROM member_list WHERE guild_id={server_id}"
     result = query(sql, pool, True)
     text = ""
     for e in result:
-        text += f"user {e[0]} has been connected {e[1]} hours on voice channels\n"
+        text += f"user {e[0]}, alias {e[1]} has been connected {e[2]} hours on voice channels\n"
     return text
 
 def get_time_es(server_id):
-    sql = f"SELECT user_name, connection_time FROM member_list WHERE guild_id={server_id}"
+    sql = f"SELECT user_name, guild_nick, connection_time FROM member_list WHERE guild_id={server_id}"
     result = query(sql, pool, True)
     text = ""
     for e in result:
-        text += f"usuario {e[0]} ha estado conectado {e[1]} horas en los canales de voz\n"
+        text += f"usuario {e[0]}, alias {e[1]} ha estado conectado {e[2]} horas en los canales de voz\n"
     return text
