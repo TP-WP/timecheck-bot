@@ -1,6 +1,10 @@
-bot de discord para medir horas de conexion de un equipo en un servidor de discord
+discord bot to measure connection time of members of a discord server
 
-py main.py para echar a andar bot
+to setup db:
+mysql connection_time < ./mysql/connection_time.sql
+
+to start bot:
+py main.py
 
 pip install mysql-connector-python
 pip install discord.py

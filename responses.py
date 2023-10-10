@@ -8,10 +8,10 @@ def handle_response(message, is_private) -> str:
         return "general kenobi"
     
     if p_message == "get connection time":
-        return mysql_con.get_time_en(message.guild.id)
+        return mysql_con.get_total_time_en(message.guild.id)
     
     if p_message == "tiempos de conexion":
-        return mysql_con.get_time_es(message.guild.id)
+        return mysql_con.get_total_time_es(message.guild.id)
     
     if p_message == "!help":
         return "`help message`"

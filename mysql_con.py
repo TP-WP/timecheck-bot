@@ -49,22 +49,22 @@ def login( guild_id, guild_name, user_id, user_name, guild_nick):
     sql = f"CALL insert_login ('{guild_id}', '{guild_name}', '{user_id}', '{user_name}', '{guild_nick}', '{now}')"
     query(sql, pool)
 
-def logout( guild_id, guild_name, user_id, user_name, guild_nick):
+def logout( guild_id, user_id):
     now = datetime.now()
     now = now.strftime('%Y-%m-%d %H:%M:%S')
-    sql = f"CALL insert_time ('{guild_id}', '{guild_name}', '{user_id}', '{user_name}', '{guild_nick}', '{now}')"
+    sql = f"CALL insert_time ('{guild_id}', '{user_id}', '{now}')"
     query(sql, pool)
 
-def get_time_en(server_id):
-    sql = f"SELECT user_name, guild_nick, connection_time FROM member_list WHERE guild_id={server_id}"
+def get_total_time_en(server_id):
+    sql = f"CALL get_total_time ({server_id})"
     result = query(sql, pool, True)
     text = ""
     for e in result:
         text += f"user {e[0]}, alias {e[1]} has been connected {e[2]} hours on voice channels\n"
     return text
 
-def get_time_es(server_id):
-    sql = f"SELECT user_name, guild_nick, connection_time FROM member_list WHERE guild_id={server_id}"
+def get_total_time_es(server_id):
+    sql = f"CALL get_total_time ({server_id})"
     result = query(sql, pool, True)
     text = ""
     for e in result:
