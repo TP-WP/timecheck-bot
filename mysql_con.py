@@ -53,9 +53,16 @@ def logout( guild_id, user_id):
     now = now.strftime('%Y-%m-%d %H:%M:%S')
     call_proc(pool, "insert_time", [guild_id, user_id, now])
 
-def get_total_time_en(server_id):
+def get_total_time_es(server_id):
     result = call_proc(pool, "get_total_time",[server_id])
     text=""
     for e in result[0]:
         text+=f"{e[0]} o {e[1]}, se ha conectado {e[2]} horas\n"
+    return text
+
+def get_total_daily_logs_es(server_id):
+    result = call_proc(pool, "get_total_daily_logs",[server_id])
+    text=""
+    for e in result[0]:
+        text+=f"{e[0]} o {e[1]}, se ha conectado {e[3]} horas el dia {e[2]}\n"
     return text

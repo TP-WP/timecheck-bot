@@ -34,7 +34,12 @@ logout_time TIMESTAMP
 get_total_time (guild_id)
 //gets server total connection times
 //is called on chat message "connection time total" or "tiempo de conexion total"
-guild_id BIGINT
+params
+@guild_id BIGINT
+returns
+-user.name
+-guild.nick
+-total connection time
 
 get_total_user_time (guild_id, user_id)
 //gets user total connection time on server
@@ -45,9 +50,15 @@ user_id BIGINT
 get_daily_log(guild_id,user_id,day)
 //gets single daily log
 //is called on chat message "connection time user user_name day day" or "tiempo de conexion usuario user_name day dia"
-guild_id BIGINT
-user_id BIGINT
-day DATE // "YYYY-MM-DD"
+params
+@guild_id BIGINT
+@user_id BIGINT
+@day DATE // "YYYY-MM-DD"
+returns
+-user.name
+-guild.nick
+-day
+-connection_time
 
 get_total_daily_logs(guild_id)
 //gets server total daily logs
