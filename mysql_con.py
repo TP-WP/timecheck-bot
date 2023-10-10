@@ -21,52 +21,41 @@ def create_connection_pool():
     except NameError:
         print(NameError)
 
-def query(sql, pool, fetch=False):
+def call_proc(pool, proc, args):
     connection = pool.get_connection()
-    result = ""
-
+    results = []
     try:
         if(connection.is_connected()):
             cursor = connection.cursor()
-            if(fetch==False):
-                cursor.execute(sql)
-            else:
-                cursor.execute(sql)
-                result = cursor.fetchall()
+            cursor.callproc(proc,args)
+            stored_results = cursor.stored_results()
+
+            for result in stored_results:
+                results.append(result.fetchall())
+            
     except NameError:
         print(NameError)
     finally:
         if connection.is_connected():
             cursor.close()
             connection.close()
-            return result
+            return results
 
 pool = create_connection_pool()
 
 def login( guild_id, guild_name, user_id, user_name, guild_nick):
     now = datetime.now()
     now = now.strftime('%Y-%m-%d %H:%M:%S')
-    sql = f"CALL insert_login ('{guild_id}', '{guild_name}', '{user_id}', '{user_name}', '{guild_nick}', '{now}')"
-    query(sql, pool)
+    call_proc(pool, "insert_login", [guild_id, guild_name, user_id, user_name, guild_nick, now])
 
 def logout( guild_id, user_id):
     now = datetime.now()
     now = now.strftime('%Y-%m-%d %H:%M:%S')
-    sql = f"CALL insert_time ('{guild_id}', '{user_id}', '{now}')"
-    query(sql, pool)
+    call_proc(pool, "insert_time", [guild_id, user_id, now])
 
 def get_total_time_en(server_id):
-    sql = f"CALL get_total_time ({server_id})"
-    result = query(sql, pool, True)
-    text = ""
-    for e in result:
-        text += f"user {e[0]}, alias {e[1]} has been connected {e[2]} hours on voice channels\n"
-    return text
-
-def get_total_time_es(server_id):
-    sql = f"CALL get_total_time ({server_id})"
-    result = query(sql, pool, True)
-    text = ""
-    for e in result:
-        text += f"usuario {e[0]}, alias {e[1]} ha estado conectado {e[2]} horas en los canales de voz\n"
+    result = call_proc(pool, "get_total_time",[server_id])
+    text=""
+    for e in result[0]:
+        text+=f"{e[0]} o {e[1]}, se ha conectado {e[2]} horas\n"
     return text
