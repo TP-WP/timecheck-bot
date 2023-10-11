@@ -37,7 +37,7 @@ CREATE TABLE daily_logs
     user_id BIGINT NOT NULL,
     day DATE,
     connection_time DECIMAL(10,4),
-    PRIMARY KEY (guild_id, user_id)
+    PRIMARY KEY (guild_id, user_id, day)
 );
 
 DELIMITER &&  
@@ -155,6 +155,20 @@ BEGIN
     USING (guild_id, user_id)
     WHERE guild_id=guildId AND user_id=userId
     GROUP BY user_name, guild_nick, day, connection_time;
+
+END&&
+DELIMITER ; 
+
+DELIMITER &&  
+CREATE PROCEDURE get_weekly_summary (
+    IN guildId BIGINT
+    )
+BEGIN
+    SELECT member_list.user_name, member_list.guild_nick, WEEK(daily_logs.day) AS week, SUM(daily_logs.connection_time) AS hours
+    FROM member_list INNER JOIN daily_logs
+    USING (user_id, guild_id)
+    WHERE guild_id = guildId
+    GROUP BY user_id, guild_id, week;
 
 END&&
 DELIMITER ; 
