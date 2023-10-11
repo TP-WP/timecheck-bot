@@ -40,5 +40,10 @@ def run_discord_bot():
         asd = mysql_con.get_total_daily_logs_es(ctx.guild.id)
         await ctx.send(asd)
 
+    @client.command(name="resumen_semanal")
+    async def get_weekly_summary(ctx):
+        asd = mysql_con.get_weekly_summary_es(ctx.guild.id)
+        await ctx.send(asd)
+
     client.run(os.getenv('TOKEN'))
 

@@ -66,3 +66,10 @@ def get_total_daily_logs_es(server_id):
     for e in result[0]:
         text+=f"{e[0]} o {e[1]}, se ha conectado {e[3]} horas el dia {e[2]}\n"
     return text
+
+def get_weekly_summary_es(server_id):
+    result = call_proc(pool, "get_weekly_summary",[server_id])
+    text=""
+    for e in result[0]:
+        text+=f"{e[0]} o {e[1]} en la semana {e[2]} se conecto {e[3]} horas\n"
+    return text
