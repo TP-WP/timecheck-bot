@@ -1,4 +1,4 @@
-from mysql.connector import pooling
+import psycopg2.pool
 import os
 from dotenv import load_dotenv
 from datetime import datetime
@@ -7,31 +7,32 @@ load_dotenv()
 
 def create_connection_pool():        
     try:
-        connection_pool = pooling.MySQLConnectionPool(
-            pool_name="pynative_pool",
-            pool_size=5,
-            pool_reset_session=True,
-            autocommit = True,
+        connection_pool = psycopg2.pool.SimpleConnectionPool(
+            1,
+            20,
             host=os.getenv('DB_HOST'),
             database=os.getenv('DB_NAME'),
             user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASS')
+            password=os.getenv('DB_PASS'),
+            port=os.getenv('DB_PORT')
             )
+        if (connection_pool):
+            print("Connection pool created successfully")
+
         return connection_pool
     except NameError:
         print(NameError)
 
 def call_proc(pool, proc, args):
-    connection = pool.get_connection()
+    connection = pool.getconn()
     results = []
     try:
-        if(connection.is_connected()):
+        if(connection):
+            print("connected from pool")
             cursor = connection.cursor()
             cursor.callproc(proc,args)
-            stored_results = cursor.stored_results()
-
-            for result in stored_results:
-                results.append(result.fetchall())
+            results = cursor.fetchall()
+            print("results",results)
             
     except NameError:
         print(NameError)
@@ -56,20 +57,20 @@ def logout( guild_id, user_id):
 def get_total_time_es(server_id):
     result = call_proc(pool, "get_total_time",[server_id])
     text=""
-    for e in result[0]:
+    for e in result:
         text+=f"{e[0]} o {e[1]}, se ha conectado {e[2]} horas\n"
     return text
 
 def get_total_daily_logs_es(server_id):
     result = call_proc(pool, "get_total_daily_logs",[server_id])
     text=""
-    for e in result[0]:
+    for e in result:
         text+=f"{e[0]} o {e[1]}, se ha conectado {e[3]} horas el dia {e[2]}\n"
     return text
 
 def get_weekly_summary_es(server_id):
     result = call_proc(pool, "get_weekly_summary",[server_id])
     text=""
-    for e in result[0]:
+    for e in result:
         text+=f"{e[0]} o {e[1]} en la semana {e[2]} se conecto {e[3]} horas\n"
     return text
