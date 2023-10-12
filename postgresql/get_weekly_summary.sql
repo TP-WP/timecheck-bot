@@ -1,2 +1,4 @@
+\c connection_time;
 
-CALL get_weekly_summary(222);
+
+SELECT * FROM get_weekly_summary(222);

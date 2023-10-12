@@ -1,1 +1,1 @@
-CALL get_total_user_time (111,222);
+SELECT * FROM get_total_user_time (111,222);
