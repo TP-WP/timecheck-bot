@@ -1,1 +1,0 @@
-SELECT * FROM get_total_user_time (111,222);
