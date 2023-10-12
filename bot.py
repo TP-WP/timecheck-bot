@@ -45,5 +45,10 @@ def run_discord_bot():
         asd = psql_con.get_weekly_summary_es(ctx.guild.id)
         await ctx.send(asd)
 
+    #TODO 
+    #horas de conexion de single user
+    #registros diarios de single user
+    #un solo registro diario
+    
     client.run(os.getenv('TOKEN'))
 

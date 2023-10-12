@@ -74,3 +74,8 @@ def get_weekly_summary_es(server_id):
     for e in result:
         text+=f"{e[0]} o {e[1]} en la semana {e[2]} se conecto {e[3]} horas\n"
     return text
+
+#funciones en not_implemented.sql
+#horas de conexion de single user
+#registros diarios de single user
+#un solo registro diario

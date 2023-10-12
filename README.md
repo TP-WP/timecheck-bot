@@ -1,15 +1,17 @@
 discord bot to measure connection time of members of a discord server
 
-to setup db:
-mysql -u <user> -p <pass> connection_time < ./mysql/connection_time.sql
+SETUP DB
+psql -U <user> -d connection_time -a -f ./postgresql/connection_time.sql
 
-to start bot:
-py main.py
-
+INSTALL DEPENDENCIES
 pip install psycopg2
 pip install discord.py
 pip install python-dotenv
 
+to start bot:
+py main.py
+
+DATABASE
 STORED PROCEDURES
 
 insert_login (guild_id, guild_name, user_id, user_name, guild_nick, login_time)
@@ -31,42 +33,34 @@ guild_id BIGINT
 user_id BIGINT
 logout_time TIMESTAMP
 
+FUNCTIONS
+
 get_total_time (guild_id)
 //gets server total connection times
-//is called on chat message "connection time total" or "tiempo de conexion total"
-params
-@guild_id BIGINT
+//is called on command $horas_de_conexion
 returns
 -user.name
 -guild.nick
 -total connection time
 
-get_total_user_time (guild_id, user_id)
-//gets user total connection time on server
-//is called on chat message "connection time user user_name" or "tiempo de conexion usuario user_name"
-guild_id BIGINT
-user_id BIGINT
-
-get_daily_log(guild_id,user_id,day)
-//gets single daily log
-//is called on chat message "connection time user user_name day day" or "tiempo de conexion usuario user_name day dia"
-params
-@guild_id BIGINT
-@user_id BIGINT
-@day DATE // "YYYY-MM-DD"
-returns
--user.name
--guild.nick
--day
--connection_time
-
 get_total_daily_logs(guild_id)
 //gets server total daily logs
-//is called on chat message "connection time daily logs" or "tiempo de conexion registros diarios"
-guild_id BIGINT
+//is called on command $registros_diarios
+
+get_weekly_summary(guild_id)
+//gets weekly summary grouped by guild-user-week using week of the year
+//is called on command $resumen_semanal
+
+NOT IMPLEMENTED
 
 get_user_daily_logs(guild_id, user_id)
 //gets user daily logs on server
-//is called on chat message "connection time daily logs user user_name" or "tiempo de conexion registros diarios usuario user_name"
-guild_id BIGINT
-user_id BIGINT
+//should be called on command $resumen_semanal "user_name"
+
+get_daily_log(guild_id,user_id,day)
+//gets single daily log
+//should be called on command $registro_diario "user_name" "dia"
+
+get_total_user_time (guild_id, user_id)
+//gets user total connection time on server
+//should be called on command $horas_de_conexion "user_name"
