@@ -36,7 +36,7 @@ logout_time TIMESTAMP
 FUNCTIONS
 
 get_total_time (guild_id)
-//gets server total connection times
+//gets server total connection hours
 //is called on command $horas_de_conexion
 returns
 -user.name

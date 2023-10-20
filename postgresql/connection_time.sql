@@ -51,13 +51,14 @@ CREATE PROCEDURE insert_time (
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO daily_logs
-        (guild_id, user_id, day, connection_hours)
-    VALUES
-        (guildId, userId, DATE(logout), TRUNC(EXTRACT(EPOCH FROM logout - (SELECT login FROM logins WHERE user_id=userId AND guild_id=guildId))/3600,4 ))
-    ON CONFLICT (guild_id, user_id, day) DO UPDATE SET
-        connection_hours = daily_logs.connection_hours + TRUNC(EXTRACT(EPOCH FROM logout - (SELECT login FROM logins WHERE user_id=userId AND guild_id=guildId))/3600, 4)
-    WHERE EXISTS (SELECT user_id FROM logins WHERE user_id=userId AND guild_id=guildId);
+    IF EXISTS (SELECT user_id FROM logins WHERE logins.user_id=userId AND logins.guild_id=guildId) THEN 
+        INSERT INTO daily_logs
+            (guild_id, user_id, day, connection_hours)
+        VALUES
+            (guildId, userId, DATE(logout), TRUNC(EXTRACT(EPOCH FROM logout - (SELECT login FROM logins WHERE user_id=userId AND guild_id=guildId))/3600,4 ))
+        ON CONFLICT (guild_id, user_id, day) DO UPDATE SET
+            connection_hours = daily_logs.connection_hours + TRUNC(EXTRACT(EPOCH FROM logout - (SELECT login FROM logins WHERE user_id=userId AND guild_id=guildId))/3600, 4);
+    END IF;
 END;
 $$;
 
